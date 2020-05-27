@@ -1,6 +1,6 @@
 <launch>
   <!-- Map Server -->
-  <arg name="map_file" default="$(find my_robot)/maps/map.yaml"/>
+  <arg name="map_file" default="/root/ros-exercises/src/my_robot/maps/map.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL Node -->
@@ -33,7 +33,6 @@
     <rosparam file="$(find my_robot)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find my_robot)/config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find my_robot)/config/base_local_planner_params.yaml" command="load" />
-
   </node>
 
 </launch>
