@@ -1,6 +1,6 @@
 <launch>
   <!-- Map Server -->
-  <arg name="map_file" default="/root/ros-exercises/src/my_robot/maps/map.yaml"/>
+  <arg name="map_file" default="$(find my_robot)/maps/map.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL Node -->
