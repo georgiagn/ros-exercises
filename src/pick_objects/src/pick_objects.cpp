@@ -9,7 +9,11 @@ int main(int argc, char** argv){
   // Initialize the pick_objects node
   ros::init(argc, argv, "pick_objects");
 
-  //tell the action client that we want to spin a thread by default
+  // Using global namespace for setting rosparam location_reached
+  ros::NodeHandle n;
+  n.setParam("location_reached", false);
+
+  // Tell the action client that we want to spin a thread by default
   MoveBaseClient ac("move_base", true);
 
   // Wait 5 sec for move_base action server to come up
@@ -35,8 +39,10 @@ int main(int argc, char** argv){
   ac.waitForResult();
 
   // Check if the robot reached its goal
-  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+  if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
+    n.setParam("location_reached", true);
     ROS_INFO("Robot picked up the virtual object");
+  }
   else
     ROS_INFO("The base failed to move to the pick-up zone for some reason");
 

@@ -28,7 +28,7 @@ int main( int argc, char** argv )
   ros::init(argc, argv, "cube");
   ros::NodeHandle n;
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-  ros::Subscriber sub = n.subscribe("odom", 1000, callback);
+  //ros::Subscriber sub = n.subscribe("odom", 1000, callback);
 
   // Set our initial shape type to be a cube
   uint32_t shape = visualization_msgs::Marker::CUBE;
@@ -88,8 +88,14 @@ int main( int argc, char** argv )
   ROS_INFO("Published first");
 
   // When the robot reaches the pickup location, the marker should disappear. 
-  while(!reached_pickup) {
-    ros::spin();
+  //while(!reached_pickup) {
+  std::string s;
+  while(ros::ok){
+    if(ros::param::get("~location_reached", s))
+      ROS_INFO("Got param: %s", s.c_str());
+    else
+      ROS_INFO("Param failed %s", s.c_str());
+    ros::Duration(1).sleep();
   }
 
   marker.header.stamp = ros::Time::now();
