@@ -26,7 +26,7 @@ bool reached_pickup = false;
 // Global variable indicating if the robot reached the dropoff zone
 bool reached_dropoff = false;
 // Global variable indicating the margin in odom pose position to consider we arrived at a location
-double margin = 0.2;
+double margin = 0.3;
 
 /* Callback function called when new odom data is received */
 void callback(const nav_msgs::Odometry::ConstPtr& msg)
