@@ -88,9 +88,9 @@ int main( int argc, char** argv )
   marker.pose.orientation.w = pickup_orientation_w;
 
   // Set the scale of the marker -- 1x1x1 here means 1m on a side
-  marker.scale.x = 0.3;
-  marker.scale.y = 0.3;
-  marker.scale.z = 0.3;
+  marker.scale.x = 0.5;
+  marker.scale.y = 0.5;
+  marker.scale.z = 0.5;
 
   // Set the color -- be sure to set alpha to something non-zero!
   marker.color.r = 1.0f;
@@ -112,7 +112,7 @@ int main( int argc, char** argv )
     sleep(1);
   }
   marker_pub.publish(marker);
-  ROS_INFO("Published pickup marker");
+  ROS_INFO("Published first");
 
   // When the robot reaches the pickup location, the marker should disappear. 
   // We poll the global variable reached_pickup at 100 Hz frequency.
@@ -133,7 +133,7 @@ int main( int argc, char** argv )
   // Wait 5 sec to simulate pickup 
   ros::Duration(5).sleep();
 
-  // Set the pose of the marker at the dropoff location.  
+  // Set the pose of the marker.  
   // This is a full 6DOF pose relative to the frame/time specified in the header
   marker.pose.position.x = dropoff_position_x;
   marker.pose.position.y = dropoff_position_y;
@@ -143,7 +143,21 @@ int main( int argc, char** argv )
   marker.pose.orientation.z = dropoff_orientation_z;
   marker.pose.orientation.w = dropoff_orientation_w;
 
-  // When the robot reaches the dropoff location, the marker should appear again. 
+  // The marker at the dropoff location will stay visible until a newer marker is sent
+  // marker.lifetime = ros::Duration();
+  marker.header.stamp = ros::Time::now();
+  marker.action = visualization_msgs::Marker::ADD;
+
+  // Set the color -- be sure to set alpha to something non-zero!
+  marker.color.r = 0.0f;
+  marker.color.g = 0.0f;
+  marker.color.b = 1.0f;
+  marker.color.a = 1.0;
+
+  marker_pub.publish(marker);
+  ROS_INFO("Published second");
+
+  // When the robot reaches the dropoff location, the marker should disappear. 
   // We poll the global variable reached_dropoff at 100 Hz frequency.
   reached_dropoff = false;
   while(ros::ok){
@@ -153,14 +167,12 @@ int main( int argc, char** argv )
     r.sleep();
   }
 
-  // The marker at the dropoff location will appear once the robot arrives there
-  // and will be displayed from then on.
-  marker.lifetime = ros::Duration();
+  // Set the marker action and new timestamp 
+  marker.action = visualization_msgs::Marker::DELETE;
   marker.header.stamp = ros::Time::now();
-  marker.action = visualization_msgs::Marker::ADD;
 
   marker_pub.publish(marker);
-  ROS_INFO("Published dropoff marker");
+  ROS_INFO("Marker disappeared");
 
   sleep(10);
 }
