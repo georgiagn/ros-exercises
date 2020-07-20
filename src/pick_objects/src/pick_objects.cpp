@@ -9,10 +9,6 @@ int main(int argc, char** argv){
   // Initialize the pick_objects node
   ros::init(argc, argv, "pick_objects");
 
-  // Using global namespace for setting rosparam location_reached
-  ros::NodeHandle n;
-  n.setParam("location_reached", false);
-
   // Tell the action client that we want to spin a thread by default
   MoveBaseClient ac("move_base", true);
 
@@ -28,7 +24,7 @@ int main(int argc, char** argv){
   goal.target_pose.header.stamp = ros::Time::now();
 
   // Define a position and orientation for the robot to reach
-  goal.target_pose.pose.position.x = 2.0;
+  goal.target_pose.pose.position.x = 3.0;
   goal.target_pose.pose.orientation.w = 1.0;
 
    // Send the goal position and orientation for the robot to reach
@@ -40,7 +36,6 @@ int main(int argc, char** argv){
 
   // Check if the robot reached its goal
   if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED){
-    n.setParam("location_reached", true);
     ROS_INFO("Robot picked up the virtual object");
   }
   else
