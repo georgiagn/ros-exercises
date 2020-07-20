@@ -1,7 +1,6 @@
 #include <cmath>
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
-#include <nav_msgs/Odometry.h>
 
 // Pickup pose parameters
 float pickup_position_x = 3.0;
@@ -21,41 +20,11 @@ float dropoff_orientation_y = 0.0;
 float dropoff_orientation_z = 0.0;
 float dropoff_orientation_w = -1.0;
 
-// Global variable indicating if the robot reached the pickup zone
-bool reached_pickup = false;
-// Global variable indicating if the robot reached the dropoff zone
-bool reached_dropoff = false;
-// Global variable indicating the margin in odom pose position to consider we arrived at a location
-double margin = 0.3;
-
-/* Callback function called when new odom data is received */
-void callback(const nav_msgs::Odometry::ConstPtr& msg)
-{
-  double tx = msg->pose.pose.position.x;
-  double ty = msg->pose.pose.position.y;
-  double tz = msg->pose.pose.position.z;
-  if(fabs(tx - pickup_position_x) < margin && fabs(ty - pickup_position_y) < margin && fabs(tz - pickup_position_z) < margin){
-    ROS_INFO("Position-> x: [%f], y: [%f], z: [%f]", tx, ty, tz);  
-    ROS_INFO("Difference-> x: [%f], y: [%f]", fabs(tx - pickup_position_x), fabs(ty - pickup_position_y));  
-    ROS_INFO("Arrived at pickup location!");
-    reached_pickup = true;
-  }
- 
-  else if(fabs(tx - dropoff_position_x) < margin && fabs(ty - dropoff_position_y) < margin && fabs(tz - dropoff_position_z) < margin){
-    ROS_INFO("Position-> x: [%f], y: [%f], z: [%f]", tx, ty, tz);  
-    ROS_INFO("Difference-> x: [%f], y: [%f]", fabs(tx - dropoff_position_x), fabs(ty - dropoff_position_y));  
-    ROS_INFO("Arrived at dropoff location!");
-    reached_dropoff = true;
-  }
-}
-
 int main( int argc, char** argv )
 {
   ros::init(argc, argv, "cube");
   ros::NodeHandle n;
-  ros::Rate r(100); // 100 Hz
   ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-  ros::Subscriber sub = n.subscribe("odom", 1000, callback);
 
   // Set our initial shape type to be a cube
   uint32_t shape = visualization_msgs::Marker::CUBE;
@@ -98,8 +67,8 @@ int main( int argc, char** argv )
   marker.color.b = 0.0f;
   marker.color.a = 1.0;
 
-  // The marker will stay visible until a newer marker is sent
-  marker.lifetime = ros::Duration();
+  // The marker will stay visible for 5 sec
+  marker.lifetime = ros::Duration(5);
 
   // Publish the marker once the first subscriber subscribes to topic
   while (marker_pub.getNumSubscribers() < 1)
@@ -112,28 +81,12 @@ int main( int argc, char** argv )
     sleep(1);
   }
   marker_pub.publish(marker);
-  ROS_INFO("Published first");
+  ROS_INFO("Published pickup marker");
 
-  // When the robot reaches the pickup location, the marker should disappear. 
-  // We poll the global variable reached_pickup at 100 Hz frequency.
-  while(ros::ok){
-    ros::spinOnce();
-    if(reached_pickup)
-      break;
-    r.sleep();
-  }
+  // Wait for a total of 10 sec (5 sec for marker to disappear and 5 sec to simulate pickup)
+  ros::Duration(10).sleep();
 
-  // Set the marker action and new timestamp 
-  marker.action = visualization_msgs::Marker::DELETE;
-  marker.header.stamp = ros::Time::now();
-
-  marker_pub.publish(marker);
-  ROS_INFO("Marker disappeared");
-
-  // Wait 5 sec to simulate pickup 
-  ros::Duration(5).sleep();
-
-  // Set the pose of the marker.  
+  // Set the pose of the dropoff marker.  
   // This is a full 6DOF pose relative to the frame/time specified in the header
   marker.pose.position.x = dropoff_position_x;
   marker.pose.position.y = dropoff_position_y;
@@ -143,37 +96,14 @@ int main( int argc, char** argv )
   marker.pose.orientation.z = dropoff_orientation_z;
   marker.pose.orientation.w = dropoff_orientation_w;
 
-  // The marker at the dropoff location will stay visible until a newer marker is sent
-  // marker.lifetime = ros::Duration();
-  marker.header.stamp = ros::Time::now();
+  // Set the marker action, new timestamp and infinite display time (or until a new marker is sent)
   marker.action = visualization_msgs::Marker::ADD;
-
-  // Set the color -- be sure to set alpha to something non-zero!
-  marker.color.r = 0.0f;
-  marker.color.g = 0.0f;
-  marker.color.b = 1.0f;
-  marker.color.a = 1.0;
-
-  marker_pub.publish(marker);
-  ROS_INFO("Published second");
-
-  // When the robot reaches the dropoff location, the marker should disappear. 
-  // We poll the global variable reached_dropoff at 100 Hz frequency.
-  reached_dropoff = false;
-  while(ros::ok){
-    ros::spinOnce();
-    if(reached_dropoff)
-      break;
-    r.sleep();
-  }
-
-  // Set the marker action and new timestamp 
-  marker.action = visualization_msgs::Marker::DELETE;
   marker.header.stamp = ros::Time::now();
+  marker.lifetime = ros::Duration();
 
   marker_pub.publish(marker);
-  ROS_INFO("Marker disappeared");
+  ROS_INFO("Published dropoff marker");
 
-  sleep(10);
+  ros::spin();
 }
 

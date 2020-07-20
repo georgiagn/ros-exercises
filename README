@@ -11,5 +11,5 @@ Instructions to test the project concepts:
 5. Home service robot: Run $ sh scripts/home_service.sh
 
 Comments on solution:
-- For the communication between pick_objects and add_markers, the add_markers node suscribes to /odom. Due to measurement errors, I use a margin/tolerance of 0.3 when comparing the position obtained by /odom to the target position (across all axes). This may result in the object marker disappearing sometimes earlier/later than the exact time the robot arrives at the target destination.
+- For the communication between pick_objects and add_markers (in home_service), the add_markers node suscribes to /odom. Due to the measurement error, I use a margin/tolerance of 0.3 when comparing the position obtained by /odom to the target position (across all axes). This may result in the object marker (dis)appearing sometimes earlier than the exact time the robot arrives at the target destination.
 
