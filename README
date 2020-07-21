@@ -1,9 +1,11 @@
 File structure:
 - All required ROS packages can be found under src/.
 - scripts/ contains all scripts to test the concepts of the Home Service Robot project.
-- rvizConfig/ contains the rviz configuration file which is used to display the Markers (it's linked to in the view_navigation.launch file of the turtlebot_rviz_launchers package).
+- The world and map files can be found under src/my_robot/worlds/my.world and src/my_robot/maps/map.yaml (pgm), respectively. The file paths are set as environment variables in the scripts.
+- rvizConfig/ contains the rviz configuration file which is used to display the Markers. It's linked to in the view_navigation.launch file of the turtlebot_rviz_launchers package.
 
 Instructions to test the project concepts:
+0. Set up environment under /home/workspace/ (important for full paths to work correctly): $ unzip Project5.zip; cd Project5; catkin_make; source devel/setup.bash
 1. SLAM testing: Run $ sh scripts/test_slam.sh
 2. Localization and navigation testing: Run $ sh scripts/test_navigation.sh
 3. Navigation goal node: Run $ sh scripts/pick_objects.sh
@@ -11,5 +13,5 @@ Instructions to test the project concepts:
 5. Home service robot: Run $ sh scripts/home_service.sh
 
 Comments on solution:
-- For the communication between pick_objects and add_markers (in home_service), the add_markers node suscribes to /odom. Due to the measurement error, I use a margin/tolerance of 0.3 when comparing the position obtained by /odom to the target position (across all axes). This may result in the object marker (dis)appearing sometimes earlier than the exact time the robot arrives at the target destination.
+- For the communication between pick_objects and add_markers (in home_service), the add_markers node suscribes to /odom. Due to the measurement error, I use a margin/tolerance of 0.6 when comparing the position obtained by /odom to the target position (across all axes). This may result in the object marker (dis)appearing sometimes earlier than the exact time the robot arrives at the target destination.
 

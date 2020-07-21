@@ -4,8 +4,8 @@
 #include <nav_msgs/Odometry.h>
 
 // Pickup pose parameters
-float pickup_position_x = 3.0;
-float pickup_position_y = 0.0;
+float pickup_position_x = -3.7;
+float pickup_position_y = -1.0;
 float pickup_position_z = 0.0;
 float pickup_orientation_x = 0.0;
 float pickup_orientation_y = 0.0;
@@ -13,20 +13,20 @@ float pickup_orientation_z = 0.0;
 float pickup_orientation_w = 1.0;
 
 // Dropoff pose parameters
-float dropoff_position_x = 1.0;
-float dropoff_position_y = 0.0;
+float dropoff_position_x = 0.5;
+float dropoff_position_y = -4.0;
 float dropoff_position_z = 0.0;
 float dropoff_orientation_x = 0.0;
 float dropoff_orientation_y = 0.0;
 float dropoff_orientation_z = 0.0;
-float dropoff_orientation_w = -1.0;
+float dropoff_orientation_w = 1.0;
 
 // Global variable indicating if the robot reached the pickup zone
 bool reached_pickup = false;
 // Global variable indicating if the robot reached the dropoff zone
 bool reached_dropoff = false;
 // Global variable indicating the margin in odom pose position to consider we arrived at a location
-double margin = 0.3;
+double margin = 0.6;
 
 /* Callback function called when new odom data is received */
 void callback(const nav_msgs::Odometry::ConstPtr& msg)

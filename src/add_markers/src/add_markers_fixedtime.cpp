@@ -3,8 +3,8 @@
 #include <visualization_msgs/Marker.h>
 
 // Pickup pose parameters
-float pickup_position_x = 3.0;
-float pickup_position_y = 0.0;
+float pickup_position_x = -3.7;
+float pickup_position_y = -1.0;
 float pickup_position_z = 0.0;
 float pickup_orientation_x = 0.0;
 float pickup_orientation_y = 0.0;
@@ -12,13 +12,13 @@ float pickup_orientation_z = 0.0;
 float pickup_orientation_w = 1.0;
 
 // Dropoff pose parameters
-float dropoff_position_x = 1.0;
-float dropoff_position_y = 0.0;
+float dropoff_position_x = 0.5;
+float dropoff_position_y = -4.0;
 float dropoff_position_z = 0.0;
 float dropoff_orientation_x = 0.0;
 float dropoff_orientation_y = 0.0;
 float dropoff_orientation_z = 0.0;
-float dropoff_orientation_w = -1.0;
+float dropoff_orientation_w = 1.0;
 
 int main( int argc, char** argv )
 {
